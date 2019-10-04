@@ -16,8 +16,9 @@ body {
 }
 
 #main {
+  display: flex;
   background-color: yellow;
-  height: 50%;
+  height: 60%;
 }
 
 #count {
@@ -27,33 +28,33 @@ body {
 
 #control {
   background-color: red;
-  height: 25%;
+  height: 15%;
 }
 
-.circle {
+#circle {
   background-color: orange;
   width: 75%;
   margin: 0 auto;
 }
 
 #outline {
-  cx: 70;
-  cy: 70;
+  cx: 110;
+  cy: 110;
   stroke: #765373;
   stroke-width: 3px;
   fill: none;
 }
 
 #progress {
-  cx: 70;
-  cy: 70;
+  cx: 110;
+  cy: 110;
   stroke: #765373;
   stroke-width: 3px;
   fill: none;
 }
 
 #pointer {
-  cx:70;
+  cx:110;
   cy:10;
   stroke: #765373;
   stroke-width: 2px;

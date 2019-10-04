@@ -49,7 +49,7 @@ function Timer(options) {
 function update(timeLeft, timeTotal) {
   let timePercentage = timeLeft/timeTotal;
   let angle = 360 * timePercentage;
-  let rotateVal = `rotate(${angle} 70 70)`;
+  let rotateVal = `rotate(${angle} 110 110)`;
   pointer.setAttribute('transform', rotateVal);
 }
 
