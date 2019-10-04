@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 350px;
+  background-color: #000;
+}
+
+#setting {
+  background-color: blue;
+  height: 10%;
+}
+
+#main {
+  background-color: yellow;
+  height: 50%;
+}
+
+#count {
+  background-color: green;
+  height: 15%;
+}
+
+#control {
+  background-color: red;
+  height: 25%;
+}
+
+

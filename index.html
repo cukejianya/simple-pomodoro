@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Pomodoro</title>
+    <link rel='stylesheet' href='index.css'>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="setting">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+      </div>
+      <div id="main">
+        <div class="circle">
+          <svg width="200" viewBox ="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(65,65)">
+              <circle r="60" id="outline"/>
+              <g transform="rotate(-90)">
+                <circle r="60" id="progress"/>
+                <g id="pointer-group">
+                  <circle cx="100" cy="0" r="8" id="pointer"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div id="count"></div>
+      <div id="control"></div>
+    </div>
+    <script src="https://use.fontawesome.com/d52cff2fde.js"></script>
+  </body>
+</html>
