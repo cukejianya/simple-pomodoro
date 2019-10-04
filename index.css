@@ -30,4 +30,33 @@ body {
   height: 25%;
 }
 
+.circle {
+  background-color: orange;
+  width: 75%;
+  margin: 0 auto;
+}
 
+#outline {
+  cx: 70;
+  cy: 70;
+  stroke: #765373;
+  stroke-width: 3px;
+  fill: none;
+}
+
+#progress {
+  cx: 70;
+  cy: 70;
+  stroke: #765373;
+  stroke-width: 3px;
+  fill: none;
+}
+
+#pointer {
+  cx:70;
+  cy:10;
+  stroke: #765373;
+  stroke-width: 2px;
+  fill: white;
+  transition: transform 0.7s;
+}
