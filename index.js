@@ -1,10 +1,14 @@
 const pointer = document.getElementById('pointer');
+const progressCircle = document.getElementById('progress');
+const radius = parseInt(progressCircle.getAttribute('r'));
+const centerPoint = 110;
+const circumfernce = Math.PI * radius * 2;
 
 let timer = Timer({
   onTick: update
 });
 
-timer.start(20);
+timer.start(5);
 
 
 function Timer(options) {
@@ -19,10 +23,10 @@ function Timer(options) {
   let timer = {
     start(seconds) {
       timer.clear();
-      console.log(state);
       state.total = seconds;
       state.duration = seconds + 1;
       state.liveTimer = setInterval(timer.tick, 1000);
+      startProgressBar(seconds + 1);
     },
     tick() {
       state.duration -= 1;
@@ -37,7 +41,6 @@ function Timer(options) {
       timer.clear();
     },
     clear() {
-      console.log('Hey')
       clearInterval(state.liveTimer);
       state = Object.assign({}, defaultState);
     }
@@ -48,8 +51,20 @@ function Timer(options) {
 
 function update(timeLeft, timeTotal) {
   let timePercentage = timeLeft/timeTotal;
-  let angle = 360 * timePercentage;
-  let rotateVal = `rotate(${angle} 110 110)`;
+  updatePointer(timePercentage);
+  updateProgress(timePercentage);
+}
+
+function updatePointer(percentage) {
+  let angle = 360 * percentage - 360;
+  let rotateVal = `rotate(${angle} ${centerPoint} ${centerPoint})`;
   pointer.setAttribute('transform', rotateVal);
 }
 
+function updateProgress(percentage) {
+  let partCircumfernce = circumfernce * percentage;
+  let fill = Math.ceil(partCircumfernce);
+  let blank = Math.floor(circumfernce - partCircumfernce);
+  progressCircle.setAttribute('stroke-dasharray', `${blank}, ${fill}`);
+  progressCircle.setAttribute('stroke-dashoffset', `${blank}`);
+}
