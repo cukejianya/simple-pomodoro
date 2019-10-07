@@ -15,31 +15,21 @@ body {
   background-color: #000;
 }
 
-#setting {
-  background-color: blue;
-  height: 10%;
-}
-
 #main {
   display: flex;
-  background-color: yellow;
-  height: 60%;
+  height: 80%;
 }
 
-#count {
-  background-color: green;
-  height: 15%;
-}
-
-#placeholder {
-  background-color: red;
-  height: 15%;
+#session {
+  display: flex;
+  justify-content: center;
+  height: 20%;
 }
 
 #circle {
-  background-color: orange;
   width: 75%;
   margin: 0 auto;
+  margin-top: 10%;
 }
 
 #outline {
@@ -52,7 +42,7 @@ body {
 #progress {
   cx: 110;
   cy: 110;
-  stroke: #765373;
+  stroke: #7653FF;
   stroke-width: 3px;
   fill: none;
   transition: stroke-dasharray 0.7s;
@@ -61,7 +51,7 @@ body {
 #pointer {
   cx:110;
   cy:10;
-  stroke: #765373;
+  stroke: #7653FF;
   stroke-width: 2px;
   fill: white;
   transition: transform 0.7s;
@@ -85,6 +75,7 @@ body {
 #clock {
   font-size: 56px;
   font-family: 'Simplifica';
+  color: #765373;
   letter-spacing: 8px;
   position: absolute;
   top: 40%;
@@ -93,3 +84,16 @@ body {
   margin-left: -64px;
   text-align: center;
 }
+
+.session-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  text-align: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #765373;
+}
+
