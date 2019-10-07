@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Simplifica";
+  src: url('simplifica.tff') format('truetype');
+}
+
 body {
   margin: 0;
 }
@@ -68,8 +73,19 @@ body {
   top: 180px;
   left: 110px;
   position: absolute;
+  transition: color 0.7s;
 }
 
 #control:hover {
   color: #7653FF;
+}
+
+#clock {
+  font-size: 56px;
+  font-family: 'Simplifica';
+  letter-spacing: 8px;
+  position: absolute;
+  top: 110px;
+  left: 70px;
+  text-align: center;
 }
