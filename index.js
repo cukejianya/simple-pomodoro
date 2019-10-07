@@ -2,6 +2,8 @@ const pointer = document.getElementById('pointer');
 const progressCircle = document.getElementById('progress');
 const control = document.getElementById('control');
 const clock = document.getElementById('clock');
+const session = document.getElementById('session');
+const addButton = document.querySelector('.add');
 
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
@@ -16,6 +18,8 @@ timer.start(30);
 control.addEventListener('click', (evt) => {
   toggleControl(timer);
 });
+
+addButton.addEventListener('click', addSession);
 
 function Timer(options) {
   let defaultState = {
@@ -98,4 +102,10 @@ function convertSecondsToString(seconds) {
   let min = parseInt(seconds / 60) + '';
   let sec = seconds % 60 + '';
   return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
+}
+
+function addSession() {
+  let newSession = document.createElement('div');
+  newSession.setAttribute('class', 'session-circle');
+  session.insertBefore(newSession, addButton);
 }

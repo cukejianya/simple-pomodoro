@@ -22,6 +22,7 @@ body {
 
 #session {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   height: 20%;
 }
@@ -86,14 +87,22 @@ body {
 }
 
 .session-circle {
+  margin: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 10px;
   text-align: center;
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: #765373;
 }
 
+.add {
+  transition: background-color 0.7s;
+}
+
+.add:hover {
+  background-color: #7653FF
+}
