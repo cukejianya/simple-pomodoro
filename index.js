@@ -1,6 +1,7 @@
 const pointer = document.getElementById('pointer');
 const progressCircle = document.getElementById('progress');
 const control = document.getElementById('control');
+const clock = document.getElementById('clock');
 
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
@@ -10,7 +11,7 @@ var timer = Timer({
   onTick: update,
 });
 
-timer.start(60);
+timer.start(30);
 
 control.addEventListener('click', (evt) => {
   toggleControl(timer);
@@ -62,6 +63,7 @@ function update(timeLeft, timeTotal) {
   let timePercentage = timeLeft/timeTotal;
   updatePointer(timePercentage);
   updateProgress(timePercentage);
+  updateClock(timeLeft);
 }
 
 function updatePointer(percentage) {
@@ -86,4 +88,15 @@ function toggleControl(timer) {
     control.className = 'fa fa-play';
     timer.pause();
   }
+}
+
+function updateClock(seconds) {
+  let [min, sec] = convertSecondsToString(seconds);
+  clock.innerHTML = `${min}:${sec}`;
+}
+
+function convertSecondsToString(seconds) {
+  let min = parseInt(seconds / 60) + '';
+  let sec = seconds % 60 + '';
+  return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
 }
