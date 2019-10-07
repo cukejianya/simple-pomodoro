@@ -67,7 +67,7 @@ function update(timeLeft, timeTotal) {
 }
 
 function updatePointer(percentage) {
-  let angle = 360 * percentage - 360;
+  let angle = 360 * (1 - percentage);
   let rotateVal = `rotate(${angle} ${centerPoint} ${centerPoint})`;
   pointer.setAttribute('transform', rotateVal);
 }
@@ -77,7 +77,6 @@ function updateProgress(percentage) {
   let fill = Math.ceil(partCircumfernce);
   let blank = Math.floor(circumfernce - partCircumfernce);
   progressCircle.setAttribute('stroke-dasharray', `${blank}, ${fill}`);
-  progressCircle.setAttribute('stroke-dashoffset', `${blank}`);
 }
 
 function toggleControl(timer) {

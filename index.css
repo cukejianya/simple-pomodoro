@@ -55,7 +55,7 @@ body {
   stroke: #765373;
   stroke-width: 3px;
   fill: none;
-  transition: stroke-dashoffset 0.7s, stroke-dasharray 0.7s;
+  transition: stroke-dasharray 0.7s;
 }
 
 #pointer {
