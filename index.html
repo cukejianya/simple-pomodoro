@@ -21,11 +21,12 @@
         <div class='session-circle add'><i class="fa fa-plus" aria-hidden="true"></i></div>
       </div>
     </div>
-    <div class="modal closed">
+    <div id="modal" class="closed" tabindex="1">
       <i class="fa fa-times" aria-hidden="true"></i>
-      <input class="input-time" type="text" placeholder="25"/> :
-      <input class="input-time" type="text" placeholder="00"/>
+      <input id="minute" class="input-time" type="text" placeholder="25"/> :
+      <input id="second" class="input-time" type="text" placeholder="00"/>
     </div>
+    <div id="modal-overlay" class="closed"></div>
     <script src="https://use.fontawesome.com/d52cff2fde.js"></script>
     <script src="index.js"></script>
   </body>

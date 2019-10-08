@@ -3,9 +3,12 @@ const progressCircle = document.getElementById('progress');
 const control = document.getElementById('control');
 const clock = document.getElementById('clock');
 const session = document.getElementById('session');
-const modal = document.querySelector('.modal');
+const modal = document.getElementById('modal');
+const modalOverlay = document.getElementById('modal-overlay');
 const addButton = document.querySelector('.add');
 const cancelButton = document.querySelector('.fa.fa-times');
+const minInput = document.getElementById('minute');
+const secInput = document.getElementById('second');
 
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
@@ -21,10 +24,37 @@ control.addEventListener('click', (evt) => {
   toggleControl(timer);
 });
 
-addButton.addEventListener('click', addSession);
+addButton.addEventListener('click', openModal);
 
-cancelButton.addEventListener('click', cancelSession);
+cancelButton.addEventListener('click', closeModal);
 
+[minInput, secInput].forEach(elm => elm.addEventListener('keydown', ()  => {
+  if (elm.value.length === 2) {
+    elm.value = "";
+  }
+}));
+
+minInput.addEventListener('input', (evt) => {
+  if (minInput.value.length === 2) {
+    secInput.focus();
+  }
+});
+
+secInput.addEventListener('input', (evt) => {
+  if (secInput.value.length === 2) {
+    modal.focus();
+  }
+});
+
+modal.addEventListener('keypress', (evt) => {
+  if (evt.keyCode === 13) {
+    let minutes = parseInt(minInput.value || 25);
+    let seconds = parseInt(secInput.value || 0) + minutes * 60;
+    timer.start(seconds);
+    closeModal();
+  }
+});
+ 
 function Timer(options) {
   let defaultState = {
     duration: null,
@@ -37,6 +67,7 @@ function Timer(options) {
   let timer = {
     start(seconds) {
       timer.clear();
+      state.onTick(seconds, seconds);
       state.total = seconds;
       state.duration = seconds + 1;
     },
@@ -108,14 +139,21 @@ function convertSecondsToString(seconds) {
   return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
 }
 
-function addSession() {
+function openModal() {
   modal.classList.toggle('closed');
+  modalOverlay.classList.toggle('closed');
+}
+
+function addSession() {
   let newSession = document.createElement('div');
   newSession.setAttribute('class', 'session-circle');
   session.insertBefore(newSession, addButton);
 }
 
-function cancelSession() {
+function closeModal() {
   modal.classList.toggle('closed');
+  modalOverlay.classList.toggle('closed');
+  minInput.value = "";
+  secInput.value = "";
 }
 //Make deleteSession
