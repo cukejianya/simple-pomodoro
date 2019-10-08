@@ -134,6 +134,10 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.modal.closed {
+  display: none;
+}
+
 .fa.fa-times {
   font-size: 12px;
   top: 2px;

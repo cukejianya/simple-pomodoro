@@ -3,7 +3,9 @@ const progressCircle = document.getElementById('progress');
 const control = document.getElementById('control');
 const clock = document.getElementById('clock');
 const session = document.getElementById('session');
+const modal = document.querySelector('.modal');
 const addButton = document.querySelector('.add');
+const cancelButton = document.querySelector('.fa.fa-times');
 
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
@@ -20,6 +22,8 @@ control.addEventListener('click', (evt) => {
 });
 
 addButton.addEventListener('click', addSession);
+
+cancelButton.addEventListener('click', cancelSession);
 
 function Timer(options) {
   let defaultState = {
@@ -105,7 +109,13 @@ function convertSecondsToString(seconds) {
 }
 
 function addSession() {
+  modal.classList.toggle('closed');
   let newSession = document.createElement('div');
   newSession.setAttribute('class', 'session-circle');
   session.insertBefore(newSession, addButton);
 }
+
+function cancelSession() {
+  modal.classList.toggle('closed');
+}
+//Make deleteSession
