@@ -1,3 +1,9 @@
+:root {
+  --main-bg-color: #000;
+  --primary-color: #765373;
+  --secondary-color: #7653FF;
+}
+
 @font-face {
   font-family: "Simplifica";
   src: url('simplifica.tff') format('truetype');
@@ -12,7 +18,7 @@ body {
   flex-direction: column;
   width: 100%;
   height: 350px;
-  background-color: #000;
+  background-color: var(--main-bg-color);
 }
 
 #main {
@@ -36,14 +42,14 @@ body {
 #outline {
   cx: 110;
   cy: 110;
-  stroke: #765373;
+  stroke: var(--primary-color);
   fill: none;
 }
 
 #progress {
   cx: 110;
   cy: 110;
-  stroke: #7653FF;
+  stroke: var(--secondary-color);
   stroke-width: 3px;
   fill: none;
   transition: stroke-dasharray 0.7s;
@@ -52,14 +58,14 @@ body {
 #pointer {
   cx:110;
   cy:10;
-  stroke: #7653FF;
+  stroke: var(--secondary-color);
   stroke-width: 2px;
   fill: white;
   transition: transform 0.7s;
 }
 
 #control {
-  color: #765373;
+  color: var(--primary-color);
   font-size: 32px;
   top: 55%;
   left: 49%;
@@ -70,13 +76,13 @@ body {
 }
 
 #control:hover {
-  color: #7653FF;
+  color: var(--secondary-color);
 }
 
 #clock {
   font-size: 56px;
   font-family: 'Simplifica';
-  color: #765373;
+  color: var(--primary-color);
   letter-spacing: 8px;
   position: absolute;
   top: 40%;
@@ -96,7 +102,7 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #765373;
+  background-color: var(--primary-color);
 }
 
 .add {
@@ -104,5 +110,45 @@ body {
 }
 
 .add:hover {
-  background-color: #7653FF
+  background-color: var(--secondary-color)
+}
+
+.modal {
+  background-color: var(--main-bg-color);
+  color: #fff;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-around;
+  margin 5px;
+  font-size: 32px;
+  position: fixed;
+  top: 60%;
+  left: 50%;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+  width: 150px;
+  white-space: nowrap;
+  max-width: 100%;
+  height: 70px;
+  max-height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.fa.fa-times {
+  font-size: 12px;
+  top: 2px;
+  right: 5px;
+  position: absolute;
+}
+
+.input-time {
+  background-color: var(--main-bg-color);
+  color: #fff;
+  font-size: 32px;
+  text-align: center;
+  width: 50px;
+  margin: 8px;
+  border: 3px none var(--primary-color);
+  outline: none;
+  border-bottom-style: solid;
 }
