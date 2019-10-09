@@ -18,8 +18,6 @@ var timer = Timer({
   onTick: update,
 });
 
-timer.start(30);
-
 control.addEventListener('click', (evt) => {
   toggleControl(timer);
 });
@@ -50,7 +48,7 @@ modal.addEventListener('keypress', (evt) => {
   if (evt.keyCode === 13) {
     let minutes = parseInt(minInput.value || 25);
     let seconds = parseInt(secInput.value || 0) + minutes * 60;
-    timer.start(seconds);
+    addSession(seconds);
     closeModal();
   }
 });
@@ -59,39 +57,61 @@ function Timer(options) {
   let defaultState = {
     duration: null,
     total: null,
-    ...options
+    liveTimer: null,
+    sessions: [],
+    ...options,
   }
-
-  let state = {};
+  
+  let state = {...defaultState};
   
   let timer = {
-    start(seconds) {
-      timer.clear();
+    start() {
+      let [seconds, sessionType] = state.sessions.shift();
+      state.sessiontype = sessionType;
       state.onTick(seconds, seconds);
       state.total = seconds;
-      state.duration = seconds + 1;
+      state.duration = seconds;
     },
     pause() {
-      clearInterval(state.liveTimer);
+      timer.clear();
     },
     play() {
+      if (!state.duration) {
+        timer.start();
+      }
       state.liveTimer = setInterval(timer.tick, 1000);
     },
     tick() {
       state.duration -= 1;
+      if (state.duration < 0) {
+        timer.end();
+        return;
+      }
       if (state.onTick) {
         state.onTick(state.duration, state.total);
       }
-      if (!state.duration) {
-        timer.end();
-      }
     },
-    end () {
-      timer.clear();
+    end() {
+      if (state.sessions.length) {
+        timer.start();
+      } else {
+        timer.clear();
+        timer.reset();
+      }
     },
     clear() {
       clearInterval(state.liveTimer);
+    },
+    reset() {
       state = Object.assign({}, defaultState);
+    },
+    addSession(seconds) {
+      state.sessions.push([seconds, 'work']);
+      state.sessions.push([5, 'break']);
+      return seconds;
+    },
+    isActive() {
+      return !!(state.sessions.length);
     }
   }
 
@@ -119,6 +139,9 @@ function updateProgress(percentage) {
 }
 
 function toggleControl(timer) {
+  if (!timer.isActive()) {
+    return;
+  }
   if (control.className === 'fa fa-play') {
     control.className = 'fa fa-pause';
     timer.play();
@@ -144,10 +167,11 @@ function openModal() {
   modalOverlay.classList.toggle('closed');
 }
 
-function addSession() {
+function addSession(seconds) {
   let newSession = document.createElement('div');
   newSession.setAttribute('class', 'session-circle');
   session.insertBefore(newSession, addButton);
+  timer.addSession(seconds);
 }
 
 function closeModal() {
