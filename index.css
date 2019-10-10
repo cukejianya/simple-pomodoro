@@ -2,6 +2,7 @@
   --main-bg-color: #000;
   --primary-color: #765373;
   --secondary-color: #7653FF;
+  --complementary-color: #89AC00;
 }
 
 @font-face {
@@ -115,25 +116,38 @@ body {
 }
 
 
-.session-circle.delete {
+.fa-times.delete {
   opacity: 0;
   transition: opacity 0.7s;
 }
 
-.session-circle.delete:hover {
+.fa-times.delete:hover {
   opacity: 1;
 }
 
-.flash {
-  animation: beep 1s linear 0s infinite alternate;
+.work {
+  animation: work-beep 0.5s linear 0s infinite alternate;
 }
 
-@keyframes beep {
+@keyframes work-beep {
   from {
     background-color: var(--primary-color);
   }
   to {
     background-color: var(--secondary-color);
+  }
+}
+
+.break {
+  animation: break-beep 0.5s linear 0s infinite alternate;
+}
+
+@keyframes break-beep {
+  from {
+    background-color: var(--primary-color);
+  }
+  to {
+    background-color: var(--complementary-color);
   }
 }
 

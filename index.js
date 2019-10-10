@@ -147,13 +147,14 @@ function ready(sessionId, sessionType) {
   currentSessionDiv = sessionDivs.find(sessionDiv => {
     return sessionDiv.sessionId == sessionId;
   });
-  currentSessionDiv.classList.add('flash');
+  currentSessionDiv.classList.add(sessionType);
   currentSessionDiv.removeEventListener('click', deleteSession); 
 }
 
-function finish() {
+function finish(sessionType) {
   let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
-  currentSessionDiv.classList.remove('flash');
+  console.log(sessionType)
+  currentSessionDiv.classList.remove(sessionType);
   currentSessionDiv.classList.add('done');
   updateProgress(1);
   updatePointer(1);
@@ -169,7 +170,7 @@ function Timer(options) {
     start() {
       let session = state.sessions.shift();
       let [seconds, sessionType, symbol] = session; 
-      state.sessiontype = sessionType;
+      state.sessionType = sessionType;
       state.onStart(symbol, sessionType);
       state.onTick(seconds, seconds);
       state.total = seconds;
@@ -195,7 +196,7 @@ function Timer(options) {
       }
     },
     end() {
-      state.onEnd();
+      state.onEnd(state.sessionType);
       if (state.sessions.length) {
         timer.start();
       } else {
