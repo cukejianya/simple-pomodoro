@@ -9,14 +9,16 @@ const addButton = document.querySelector('.add');
 const cancelButton = document.querySelector('.fa.fa-times');
 const minInput = document.getElementById('minute');
 const secInput = document.getElementById('second');
+
 let currentSessionDiv;
+
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
 const circumfernce = Math.PI * radius * 2;
 
 var timer = Timer({
   onTick: update,
-  onStart: active,
+  onStart: ready,
   onEnd: finish,
 });
 
@@ -65,6 +67,101 @@ modal.addEventListener('keypress', (evt) => {
   }
 });
  
+function update(timeLeft, timeTotal) {
+  let timePercentage = timeLeft/timeTotal;
+  updatePointer(timePercentage);
+  updateProgress(timePercentage);
+  updateClock(timeLeft);
+}
+
+function updatePointer(percentage) {
+  let angle = 360 * (1 - percentage);
+  let rotateVal = `rotate(${angle} ${centerPoint} ${centerPoint})`;
+  pointer.setAttribute('transform', rotateVal);
+}
+
+function updateProgress(percentage) {
+  let partCircumfernce = circumfernce * percentage;
+  let fill = Math.ceil(partCircumfernce);
+  let blank = Math.floor(circumfernce - partCircumfernce);
+  progressCircle.setAttribute('stroke-dasharray', `${blank}, ${fill}`);
+}
+
+function updateClock(seconds) {
+  let [min, sec] = convertSecondsToString(seconds);
+  clock.innerHTML = `${min}:${sec}`;
+}
+
+function convertSecondsToString(seconds) {
+  let min = parseInt(seconds / 60) + '';
+  let sec = parseInt(seconds % 60) + '';
+  return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
+}
+
+function toggleControl(timer) {
+  if (!timer.isActive()) {
+    control.className = 'fa fa-play';
+    return;
+  }
+  if (control.className === 'fa fa-play') {
+    control.className = 'fa fa-pause';
+    timer.play();
+  } else {
+    control.className = 'fa fa-play';
+    timer.pause();
+  }
+}
+
+function openModal() {
+  modal.classList.toggle('closed');
+  modalOverlay.classList.toggle('closed');
+}
+
+function closeModal() {
+  modal.classList.toggle('closed');
+  modalOverlay.classList.toggle('closed');
+  minInput.value = "";
+  secInput.value = "";
+}
+
+function addSession(seconds) {
+  let newSession = document.createElement('div');
+  let xIcon = document.createElement('i');
+  let sessionId = timer.addSession(seconds);
+  newSession.setAttribute('class', 'session-circle');
+  xIcon.setAttribute('class', 'fa fa-times delete');
+  newSession.sessionId = sessionId;
+  newSession.addEventListener('click', deleteSession);
+  newSession.appendChild(xIcon);
+  session.insertBefore(newSession, addButton);
+}
+
+function deleteSession(evt) {
+  let sessionId = evt.currentTarget.sessionId;
+  evt.currentTarget.remove();
+  timer.deleteSession(sessionId);
+}
+
+function ready(sessionId, sessionType) {
+  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
+  currentSessionDiv = sessionDivs.find(sessionDiv => {
+    return sessionDiv.sessionId == sessionId;
+  });
+  currentSessionDiv.classList.add('flash');
+  currentSessionDiv.removeEventListener('click', deleteSession); 
+}
+
+function finish() {
+  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
+  currentSessionDiv.classList.remove('flash');
+  currentSessionDiv.classList.add('done');
+  updateProgress(1);
+  updatePointer(1);
+  if (!timer.isActive()) {
+    toggleControl(timer);
+  }
+}
+
 function Timer(options) {
   let state = {};
   
@@ -131,100 +228,4 @@ function Timer(options) {
   }
 
   return timer;
-}
-
-function update(timeLeft, timeTotal) {
-  let timePercentage = timeLeft/timeTotal;
-  updatePointer(timePercentage);
-  updateProgress(timePercentage);
-  updateClock(timeLeft);
-}
-
-function updatePointer(percentage) {
-  let angle = 360 * (1 - percentage);
-  let rotateVal = `rotate(${angle} ${centerPoint} ${centerPoint})`;
-  pointer.setAttribute('transform', rotateVal);
-}
-
-function updateProgress(percentage) {
-  let partCircumfernce = circumfernce * percentage;
-  let fill = Math.ceil(partCircumfernce);
-  let blank = Math.floor(circumfernce - partCircumfernce);
-  progressCircle.setAttribute('stroke-dasharray', `${blank}, ${fill}`);
-}
-
-function toggleControl(timer) {
-  if (!timer.isActive()) {
-    control.className = 'fa fa-play';
-    return;
-  }
-  if (control.className === 'fa fa-play') {
-    control.className = 'fa fa-pause';
-    timer.play();
-  } else {
-    control.className = 'fa fa-play';
-    timer.pause();
-  }
-}
-
-function updateClock(seconds) {
-  let [min, sec] = convertSecondsToString(seconds);
-  clock.innerHTML = `${min}:${sec}`;
-}
-
-function convertSecondsToString(seconds) {
-  let min = parseInt(seconds / 60) + '';
-  let sec = parseInt(seconds % 60) + '';
-  return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
-}
-
-function openModal() {
-  modal.classList.toggle('closed');
-  modalOverlay.classList.toggle('closed');
-}
-
-function addSession(seconds) {
-  let newSession = document.createElement('div');
-  let xIcon = document.createElement('i');
-  let sessionId = timer.addSession(seconds);
-  newSession.setAttribute('class', 'session-circle');
-  xIcon.setAttribute('class', 'fa fa-times delete');
-  newSession.sessionId = sessionId;
-  newSession.addEventListener('click', deleteSession);
-  newSession.appendChild(xIcon);
-  session.insertBefore(newSession, addButton);
-}
-
-function deleteSession(evt) {
-  let sessionId = evt.currentTarget.sessionId;
-  evt.currentTarget.remove();
-  timer.deleteSession(sessionId);
-}
-
-function closeModal() {
-  modal.classList.toggle('closed');
-  modalOverlay.classList.toggle('closed');
-  minInput.value = "";
-  secInput.value = "";
-}
-
-function active(sessionId, sessionType) {
-  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
-  currentSessionDiv = sessionDivs.find(sessionDiv => {
-    return sessionDiv.sessionId == sessionId;
-  });
-  currentSessionDiv.classList.add('flash');
-  currentSessionDiv.removeEventListener('click', deleteSession); 
-
-}
-
-function finish() {
-  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
-  currentSessionDiv.classList.remove('flash');
-  currentSessionDiv.classList.add('done');
-  updateProgress(1);
-  updatePointer(1);
-  if (!timer.isActive()) {
-    toggleControl(timer);
-  }
 }

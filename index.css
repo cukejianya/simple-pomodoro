@@ -26,13 +26,6 @@ body {
   height: 80%;
 }
 
-#session {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  height: 20%;
-}
-
 #circle {
   width: 75%;
   margin: 0 auto;
@@ -92,6 +85,13 @@ body {
   text-align: center;
 }
 
+#session {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 20%;
+}
+
 .session-circle {
   margin: 5px;
   display: flex;
@@ -110,21 +110,31 @@ body {
   background-color: var(--secondary-color);
 }
 
-.flash {
-  animation: beep 1s linear 0s infinite alternate;
-}
-
 .session-circle.done {
   background-color: var(--secondary-color);
 }
 
-.delete {
+
+.session-circle.delete {
   opacity: 0;
   transition: opacity 0.7s;
 }
 
-.delete:hover {
+.session-circle.delete:hover {
   opacity: 1;
+}
+
+.flash {
+  animation: beep 1s linear 0s infinite alternate;
+}
+
+@keyframes beep {
+  from {
+    background-color: var(--primary-color);
+  }
+  to {
+    background-color: var(--secondary-color);
+  }
 }
 
 #modal {
@@ -193,14 +203,5 @@ body {
 
 .input-time:focus {
   border-color: var(--secondary-color);
-}
-
-@keyframes beep {
-  from {
-    background-color: var(--primary-color);
-  }
-  to {
-    background-color: var(--secondary-color);
-  }
 }
 
