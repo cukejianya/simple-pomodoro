@@ -26,6 +26,12 @@ let timer = Timer({
 
 timer.reset();
 
+document.addEventListener('keydown', (evt) => {
+  if (evt.keyCode === 32) {
+    toggleControl();
+  }
+})
+
 control.addEventListener('click', toggleControl);
 
 addButton.addEventListener('click', openModal);
