@@ -21,6 +21,8 @@ var timer = Timer({
 });
 
 timer.reset();
+updateProgress(1);
+updatePointer(1);
 
 control.addEventListener('click', (evt) => {
   toggleControl(timer);
@@ -35,6 +37,12 @@ cancelButton.addEventListener('click', closeModal);
     elm.value = "";
   }
 }));
+
+[minInput, secInput].forEach(elm => elm.onblur = () => {
+  if (elm.value.length === 1) {
+    elm.value = "0" + elm.value;
+  }
+})
 
 minInput.addEventListener('input', (evt) => {
   if (minInput.value.length === 2) {
@@ -94,15 +102,14 @@ function Timer(options) {
       if (state.sessions.length) {
         timer.start();
       } else {
-        timer.clear();
         timer.reset();
       }
     },
     clear() {
       clearInterval(state.liveTimer);
-      state.onTick(0.1, 0.1);
     },
     reset() {
+      timer.clear();
       let defaultState = {
         sessions: [],
         ...options
@@ -215,6 +222,8 @@ function finish() {
   let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
   currentSessionDiv.classList.remove('flash');
   currentSessionDiv.classList.add('done');
+  updateProgress(1);
+  updatePointer(1);
   if (!timer.isActive()) {
     toggleControl(timer);
   }

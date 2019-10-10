@@ -187,8 +187,12 @@ body {
   text-align: center;
   width: 50px;
   margin: 8px;
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
   outline: none;
+}
+
+.input-time:focus {
+  border-color: var(--secondary-color);
 }
 
 @keyframes beep {
