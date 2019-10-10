@@ -53,8 +53,8 @@ breakInput.addEventListener('input', (evt) => {
 
 modal.addEventListener('keypress', (evt) => {
   if (evt.keyCode === 13) {
-    let workMins = parseInt(workInput.value || workInput.placeholder)// * 60;
-    let breakMins = parseInt(breakInput.value || breakInput.placeholder)// + * 60;
+    let workMins = parseInt(workInput.value || workInput.placeholder) * 60;
+    let breakMins = parseInt(breakInput.value || breakInput.placeholder) * 60;
     workInput.value = "";
     breakInput.value = "";
     addSession(workMins, breakMins);
@@ -170,13 +170,15 @@ function finish(sessionType) {
     currentSessionDiv.removeEventListener('click', deleteSession); 
     currentSessionDiv.childNodes.forEach(child => child.remove());
   }
-  reset();
+  updateProgress(1);
+  updatePointer(1);
   if (!timer.isActive()) {
     pause();
   }
 }
 
 function reset() {
+  pause();
   updateProgress(1);
   updatePointer(1);
   updateClock(0);
