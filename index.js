@@ -9,14 +9,18 @@ const addButton = document.querySelector('.add');
 const cancelButton = document.querySelector('.fa.fa-times');
 const minInput = document.getElementById('minute');
 const secInput = document.getElementById('second');
-
+let currentSessionDiv;
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
 const circumfernce = Math.PI * radius * 2;
 
 var timer = Timer({
   onTick: update,
+  onStart: active,
+  onEnd: finish,
 });
+
+timer.reset();
 
 control.addEventListener('click', (evt) => {
   toggleControl(timer);
@@ -54,20 +58,14 @@ modal.addEventListener('keypress', (evt) => {
 });
  
 function Timer(options) {
-  let defaultState = {
-    duration: null,
-    total: null,
-    liveTimer: null,
-    sessions: [],
-    ...options,
-  }
-  
-  let state = {...defaultState};
+  let state = {};
   
   let timer = {
     start() {
-      let [seconds, sessionType] = state.sessions.shift();
+      let session = state.sessions.shift();
+      let [seconds, sessionType, symbol] = session; 
       state.sessiontype = sessionType;
+      state.onStart(symbol, sessionType);
       state.onTick(seconds, seconds);
       state.total = seconds;
       state.duration = seconds;
@@ -92,6 +90,7 @@ function Timer(options) {
       }
     },
     end() {
+      state.onEnd();
       if (state.sessions.length) {
         timer.start();
       } else {
@@ -101,14 +100,23 @@ function Timer(options) {
     },
     clear() {
       clearInterval(state.liveTimer);
+      state.onTick(0.1, 0.1);
     },
     reset() {
+      let defaultState = {
+        sessions: [],
+        ...options
+      }
       state = Object.assign({}, defaultState);
     },
     addSession(seconds) {
-      state.sessions.push([seconds, 'work']);
-      state.sessions.push([5, 'break']);
-      return seconds;
+      let symbol = Symbol();
+      state.sessions.push([seconds, 'work', symbol]);
+      state.sessions.push([5, 'break', symbol]);
+      return symbol;
+    },
+    deleteSession(symbol) {
+      state.sessions = state.sessions.filter((session) => session[2] !== symbol);
     },
     isActive() {
       return !!(state.sessions.length);
@@ -140,6 +148,7 @@ function updateProgress(percentage) {
 
 function toggleControl(timer) {
   if (!timer.isActive()) {
+    control.className = 'fa fa-play';
     return;
   }
   if (control.className === 'fa fa-play') {
@@ -158,7 +167,7 @@ function updateClock(seconds) {
 
 function convertSecondsToString(seconds) {
   let min = parseInt(seconds / 60) + '';
-  let sec = seconds % 60 + '';
+  let sec = parseInt(seconds % 60) + '';
   return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
 }
 
@@ -169,9 +178,20 @@ function openModal() {
 
 function addSession(seconds) {
   let newSession = document.createElement('div');
+  let xIcon = document.createElement('i');
+  let sessionId = timer.addSession(seconds);
   newSession.setAttribute('class', 'session-circle');
+  xIcon.setAttribute('class', 'fa fa-times delete');
+  newSession.sessionId = sessionId;
+  newSession.addEventListener('click', deleteSession);
+  newSession.appendChild(xIcon);
   session.insertBefore(newSession, addButton);
-  timer.addSession(seconds);
+}
+
+function deleteSession(evt) {
+  let sessionId = evt.currentTarget.sessionId;
+  evt.currentTarget.remove();
+  timer.deleteSession(sessionId);
 }
 
 function closeModal() {
@@ -180,4 +200,22 @@ function closeModal() {
   minInput.value = "";
   secInput.value = "";
 }
-//Make deleteSession
+
+function active(sessionId, sessionType) {
+  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
+  currentSessionDiv = sessionDivs.find(sessionDiv => {
+    return sessionDiv.sessionId == sessionId;
+  });
+  currentSessionDiv.classList.add('flash');
+  currentSessionDiv.removeEventListener('click', deleteSession); 
+
+}
+
+function finish() {
+  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
+  currentSessionDiv.classList.remove('flash');
+  currentSessionDiv.classList.add('done');
+  if (!timer.isActive()) {
+    toggleControl(timer);
+  }
+}
