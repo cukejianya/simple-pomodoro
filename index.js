@@ -16,6 +16,8 @@ let currentSessionDiv;
 const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
 const circumfernce = Math.PI * radius * 2;
+const warningBeep = new Audio('warningBeep.mp3');
+const endBeep = new Audio('endBeep.mp3');
 
 let timer = Timer({
   onTick: update,
@@ -70,6 +72,11 @@ modal.addEventListener('keypress', (evt) => {
  
 function update(timeLeft, timeTotal) {
   let timePercentage = timeLeft/timeTotal;
+  if (timeLeft === 0) {
+    endBeep.play();
+  } else if (timeLeft < 10) {
+    warningBeep.play();
+  }
   updatePointer(timePercentage);
   updateProgress(timePercentage);
   updateClock(timeLeft);
