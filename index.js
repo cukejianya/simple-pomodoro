@@ -16,19 +16,16 @@ const radius = parseInt(progressCircle.getAttribute('r'));
 const centerPoint = 110;
 const circumfernce = Math.PI * radius * 2;
 
-var timer = Timer({
+let timer = Timer({
   onTick: update,
   onStart: ready,
   onEnd: finish,
+  onReset: reset,
 });
 
 timer.reset();
-updateProgress(1);
-updatePointer(1);
 
-control.addEventListener('click', (evt) => {
-  toggleControl(timer);
-});
+control.addEventListener('click', toggleControl);
 
 addButton.addEventListener('click', openModal);
 
@@ -98,18 +95,26 @@ function convertSecondsToString(seconds) {
   return [min, sec].map(elm => elm.length === 1 ? '0' + elm : elm);
 }
 
-function toggleControl(timer) {
+function toggleControl() {
   if (!timer.isActive()) {
     control.className = 'fa fa-play';
     return;
   }
   if (control.className === 'fa fa-play') {
-    control.className = 'fa fa-pause';
-    timer.play();
+    play();
   } else {
-    control.className = 'fa fa-play';
-    timer.pause();
+    pause();
   }
+}
+
+function play() {
+  control.className = 'fa fa-pause';
+  timer.play();
+}
+
+function pause() {
+  control.className = 'fa fa-play';
+  timer.pause();
 }
 
 function openModal() {
@@ -136,9 +141,13 @@ function addSession(seconds) {
   session.insertBefore(newSession, addButton);
 }
 
-function deleteSession(evt) {
-  let sessionId = evt.currentTarget.sessionId;
-  evt.currentTarget.remove();
+function deleteSession(evt, sessionType) {
+  let target = evt.currentTarget;
+  let sessionId = target.sessionId;
+  if (!timer.isSessionActive(sessionId) || !target.classList.contains('work')) {
+    target.remove();
+  }
+  pause();
   timer.deleteSession(sessionId);
 }
 
@@ -148,7 +157,6 @@ function ready(sessionId, sessionType) {
     return sessionDiv.sessionId == sessionId;
   });
   currentSessionDiv.classList.add(sessionType);
-  currentSessionDiv.removeEventListener('click', deleteSession); 
 }
 
 function finish(sessionType) {
@@ -156,11 +164,20 @@ function finish(sessionType) {
   console.log(sessionType)
   currentSessionDiv.classList.remove(sessionType);
   currentSessionDiv.classList.add('done');
+  if (sessionType === 'break') {
+    currentSessionDiv.removeEventListener('click', deleteSession); 
+    currentSessionDiv.childNodes.forEach(child => child.remove());
+  }
+  reset();
+  if (!timer.isActive()) {
+    pause();
+  }
+}
+
+function reset() {
   updateProgress(1);
   updatePointer(1);
-  if (!timer.isActive()) {
-    toggleControl(timer);
-  }
+  updateClock(0);
 }
 
 function Timer(options) {
@@ -170,6 +187,7 @@ function Timer(options) {
     start() {
       let session = state.sessions.shift();
       let [seconds, sessionType, symbol] = session; 
+      state.sessionId = symbol;
       state.sessionType = sessionType;
       state.onStart(symbol, sessionType);
       state.onTick(seconds, seconds);
@@ -180,6 +198,7 @@ function Timer(options) {
       timer.clear();
     },
     play() {
+      timer.clear();
       if (!state.duration) {
         timer.start();
       }
@@ -209,10 +228,11 @@ function Timer(options) {
     reset() {
       timer.clear();
       let defaultState = {
-        sessions: [],
+        sessions: state.sessions || [],
         ...options
       }
       state = Object.assign({}, defaultState);
+      state.onReset();
     },
     addSession(seconds) {
       let symbol = Symbol();
@@ -221,10 +241,18 @@ function Timer(options) {
       return symbol;
     },
     deleteSession(symbol) {
+      if (state.sessionId === symbol) {
+        timer.clear();
+        timer.end();
+        return;
+      }
       state.sessions = state.sessions.filter((session) => session[2] !== symbol);
     },
     isActive() {
-      return !!(state.sessions.length);
+      return !!(state.sessions.length || state.sessionId);
+    },
+    isSessionActive(symbol) {
+      return state.sessionId === symbol;
     }
   }
 
