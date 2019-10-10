@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chinedum Ukejianya",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^6.0.10"
   }
