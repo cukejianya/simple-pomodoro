@@ -2,7 +2,8 @@
   --main-bg-color: #000;
   --primary-color: #765373;
   --secondary-color: #7653FF;
-  --complementary-color: #89AC00;
+  --pri-complementary-color: #89AC8C;
+  --sec-complementary-color: #89AC00;
 }
 
 @font-face {
@@ -131,7 +132,7 @@ body {
 
 @keyframes work-beep {
   from {
-    background-color: var(--primary-color);
+    background-color: var(--main-bg-color);
   }
   to {
     background-color: var(--secondary-color);
@@ -144,10 +145,10 @@ body {
 
 @keyframes break-beep {
   from {
-    background-color: var(--primary-color);
+    background-color: var(--main-bg-color);
   }
   to {
-    background-color: var(--complementary-color);
+    background-color: var(--sec-complementary-color);
   }
 }
 
@@ -216,6 +217,17 @@ body {
 }
 
 .input-time:focus {
+  border-width: 2px;
+}
+
+#work-time:focus {
   border-color: var(--secondary-color);
 }
 
+#break-time {
+  border-color: var(--pri-complementary-color);
+}
+
+#break-time:focus {
+  border-color: var(--sec-complementary-color);
+}

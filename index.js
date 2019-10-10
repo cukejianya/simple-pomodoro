@@ -1,4 +1,5 @@
 const pointer = document.getElementById('pointer');
+const circle = document.getElementById('circle'); 
 const progressCircle = document.getElementById('progress');
 const control = document.getElementById('control');
 const clock = document.getElementById('clock');
@@ -7,8 +8,8 @@ const modal = document.getElementById('modal');
 const modalOverlay = document.getElementById('modal-overlay');
 const addButton = document.querySelector('.add');
 const cancelButton = document.querySelector('.fa.fa-times');
-const minInput = document.getElementById('minute');
-const secInput = document.getElementById('second');
+const workInput = document.getElementById('work-time');
+const breakInput = document.getElementById('break-time');
 
 let currentSessionDiv;
 
@@ -31,35 +32,32 @@ addButton.addEventListener('click', openModal);
 
 cancelButton.addEventListener('click', closeModal);
 
-[minInput, secInput].forEach(elm => elm.addEventListener('keydown', ()  => {
+let inputs = [workInput, breakInput];
+inputs.forEach(elm => elm.addEventListener('keydown', ()  => {
   if (elm.value.length === 2) {
     elm.value = "";
   }
 }));
 
-[minInput, secInput].forEach(elm => elm.onblur = () => {
-  if (elm.value.length === 1) {
-    elm.value = "0" + elm.value;
-  }
-})
-
-minInput.addEventListener('input', (evt) => {
-  if (minInput.value.length === 2) {
-    secInput.focus();
+workInput.addEventListener('input', (evt) => {
+  if (workInput.value.length === 2) {
+    breakInput.focus();
   }
 });
 
-secInput.addEventListener('input', (evt) => {
-  if (secInput.value.length === 2) {
+breakInput.addEventListener('input', (evt) => {
+  if (breakInput.value.length === 2) {
     modal.focus();
   }
 });
 
 modal.addEventListener('keypress', (evt) => {
   if (evt.keyCode === 13) {
-    let minutes = parseInt(minInput.value || 25);
-    let seconds = parseInt(secInput.value || 0) + minutes * 60;
-    addSession(seconds);
+    let workMins = parseInt(workInput.value || workInput.placeholder)// * 60;
+    let breakMins = parseInt(breakInput.value || breakInput.placeholder)// + * 60;
+    workInput.value = "";
+    breakInput.value = "";
+    addSession(workMins, breakMins);
     closeModal();
   }
 });
@@ -119,20 +117,21 @@ function pause() {
 
 function openModal() {
   modal.classList.toggle('closed');
+  modal.focus();
   modalOverlay.classList.toggle('closed');
 }
 
 function closeModal() {
   modal.classList.toggle('closed');
   modalOverlay.classList.toggle('closed');
-  minInput.value = "";
-  secInput.value = "";
+  workInput.value = "";
+  breakInput.value = "";
 }
 
-function addSession(seconds) {
+function addSession(workSecs, breakSecs) {
   let newSession = document.createElement('div');
   let xIcon = document.createElement('i');
-  let sessionId = timer.addSession(seconds);
+  let sessionId = timer.addSession(workSecs, breakSecs);
   newSession.setAttribute('class', 'session-circle');
   xIcon.setAttribute('class', 'fa fa-times delete');
   newSession.sessionId = sessionId;
@@ -157,11 +156,14 @@ function ready(sessionId, sessionType) {
     return sessionDiv.sessionId == sessionId;
   });
   currentSessionDiv.classList.add(sessionType);
+  sessionColor(progressCircle, sessionType);
+  sessionColor(pointer, sessionType)
 }
 
 function finish(sessionType) {
-  let sessionDivs = Array.from(document.querySelectorAll('.session-circle'));
-  console.log(sessionType)
+  if (!sessionType) {
+    return;
+  }
   currentSessionDiv.classList.remove(sessionType);
   currentSessionDiv.classList.add('done');
   if (sessionType === 'break') {
@@ -178,6 +180,12 @@ function reset() {
   updateProgress(1);
   updatePointer(1);
   updateClock(0);
+}
+
+function sessionColor(elm, sessionType) {
+  elm.style.stroke = (sessionType === 'break')
+    ? 'var(--sec-complementary-color)' 
+    : "";
 }
 
 function Timer(options) {
@@ -200,7 +208,7 @@ function Timer(options) {
     play() {
       timer.clear();
       if (!state.duration) {
-        timer.start();
+        timer.end();
       }
       state.liveTimer = setInterval(timer.tick, 1000);
     },
@@ -234,10 +242,10 @@ function Timer(options) {
       state = Object.assign({}, defaultState);
       state.onReset();
     },
-    addSession(seconds) {
+    addSession(workSecs, breakSecs) {
       let symbol = Symbol();
-      state.sessions.push([seconds, 'work', symbol]);
-      state.sessions.push([5, 'break', symbol]);
+      state.sessions.push([workSecs, 'work', symbol]);
+      state.sessions.push([breakSecs, 'break', symbol]);
       return symbol;
     },
     deleteSession(symbol) {
