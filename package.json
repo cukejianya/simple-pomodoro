@@ -1,5 +1,5 @@
 {
-  "name": "pomodoro",
+  "name": "simple-pomodoro",
   "version": "1.0.0",
   "description": "a simple pomodoro electronjs app",
   "main": "main.js",
@@ -10,6 +10,10 @@
   "author": "Chinedum Ukejianya",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^6.0.10"
+    "electron": "^6.0.10",
+    "electron-packager": "^14.0.6"
+  },
+  "dependencies": {
+    "menubar": "^6.0.8"
   }
 }
